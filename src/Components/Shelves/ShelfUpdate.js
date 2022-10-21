@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import * as BooksAPI from '../../Backend/BooksAPI'
-const UpdateShelf = ({book,shelf}) => {
+import PropTypes from 'prop-types'
+const UpdateShelf = (props) => {
+    
+    const {book,shelf,onBooksUpdate} = props
     const [currentShelf, updateCurrentShelf] = useState('')
     const shelves = [
         { shelfname: "currentlyReading", title : "Currently Reading" },
@@ -8,10 +11,20 @@ const UpdateShelf = ({book,shelf}) => {
         { shelfname: "read", title: "Read" },
         { shelfname: "none", title:"None"}
     ]
+    
+    const UpdateShelf = useCallback((e) => {
+        onBooksUpdate(e)
+    }, [onBooksUpdate])
+
     const handleShelfUpdate = (e) => {
         const newShelf = e.target.value
+        let updateResult;
         updateCurrentShelf(newShelf)
-        BooksAPI.update(book,newShelf)
+        BooksAPI.update(book,newShelf).then((result) => {
+            updateResult =result
+        })
+        UpdateShelf(updateResult)
+        
     }
 
     return(
@@ -38,6 +51,8 @@ const UpdateShelf = ({book,shelf}) => {
         </select>
     )
 }
-
+UpdateShelf.propTypes = {
+    onBooksUpdate: PropTypes.func,
+}
 
 export default UpdateShelf;

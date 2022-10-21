@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import Book from "../Book/Book";
 import * as BooksAPI from '../../Backend/BooksAPI'
+import UpdateShelf from "./ShelfUpdate";
+import PropTypes from 'prop-types'
 
 const ShelvesList = (props) => {
-    const {Shelf, AllBooks} = props
+    const {Shelf} = props
     const shelves = [
         { shelfname: "currentlyReading", title : "Currently Reading" },
         { shelfname: "wantToRead", title : "Want to Read" },
@@ -11,12 +13,16 @@ const ShelvesList = (props) => {
         { shelfname: "none", title:"None"}
     ]
     const [Books, setBooks] = useState([])
-    
+    const updateBooks = () => {
+        return (<UpdateShelf onBooksUpdate={setBooks} />)
+    }
     useEffect(() => {
         BooksAPI.getAll().then((books) => {
             setBooks(books)
+            updateBooks()
         })
-    }, [])
+    }, [Books])
+
 
     return (
         <div className="bookshelf" key={Shelf}>
@@ -32,5 +38,8 @@ const ShelvesList = (props) => {
             </div>
         </div>
     )
+}
+ShelvesList.propTypes = {
+    onBooksUpdate: PropTypes.func,
 }
 export default ShelvesList;
