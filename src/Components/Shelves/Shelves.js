@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Book from "../Book/Book";
 import * as BooksAPI from '../../Backend/BooksAPI'
-import UpdateShelf from "./ShelfUpdate";
 import PropTypes from 'prop-types'
 
 const ShelvesList = (props) => {
@@ -13,17 +12,21 @@ const ShelvesList = (props) => {
         { shelfname: "none", title:"None"}
     ]
     const [Books, setBooks] = useState([])
-    const updateBooks = () => {
-        return (<UpdateShelf onBooksUpdate={setBooks} />)
-    }
+
     useEffect(() => {
-        BooksAPI.getAll().then((books) => {
-            setBooks(books)
-            updateBooks()
+        let mounted = true;
+        BooksAPI.getAll()
+        .then((books) => {
+            if(mounted){
+                if(books !== Books){
+                    setBooks(books)
+                }
+            }
         })
+        return () => mounted = false
     }, [Books])
-
-
+    
+    
     return (
         <div className="bookshelf" key={Shelf}>
             <h2 className="bookshelf-title">{shelves.filter(({shelfname}) => shelfname === Shelf).map((shelf) => {return (shelf.title)})}</h2>
@@ -31,7 +34,7 @@ const ShelvesList = (props) => {
                 <ol className="books-grid">
                     {
                         Books.filter(({shelf}) => shelf === Shelf).length > 0
-                        ? Books.filter(({shelf}) => shelf === Shelf).map((book) => <Book key={book.id} book={book} />)
+                        ? Books.filter(({shelf}) => shelf === Shelf).map((book) => <Book key={book.id} book={book} shelf={book.shelf} Books={Books} setBooks={setBooks} />)
                         : <h3><span style={{color:"red",textDecoration:"underline"}}>{Books.filter(({shelf}) => shelf === Shelf).length}</span> Books found in this shelf.</h3>
                     }
                 </ol>
@@ -40,6 +43,8 @@ const ShelvesList = (props) => {
     )
 }
 ShelvesList.propTypes = {
-    onBooksUpdate: PropTypes.func,
+    setBooks: PropTypes.func,
+    Shelf: PropTypes.string.isRequired,
+    book: PropTypes.objectOf(PropTypes.object),
 }
 export default ShelvesList;

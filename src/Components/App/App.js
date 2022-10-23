@@ -1,20 +1,20 @@
-import "../../Utilities/Styles/App.css";
-import React, { useState } from "react";
-import SearchBar from "../Search/Search";
+import  {BrowserRouter as Router, Route, Routes} from "react-router-dom"
 import MainPage from "../Main/Main";
+import SearchBar from "../Search/Search";
+import Index from "../Main/Index";
 
-function App() {
-  const [showSearchPage, setShowSearchpage] = useState(false);
+const App = () => {
 
   return (
-    <div className="app">
-      {showSearchPage ? (
-        <SearchBar setShowSearchpage={setShowSearchpage} />
-      ) : (
-        <MainPage setShowSearchpage={setShowSearchpage}/>
-      )}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Index />}>
+          <Route index element={<MainPage />} />
+          <Route path="/search" element={<SearchBar />} />
+        </Route>
+      </Routes>
+    </Router>
+    
   );
 }
-
 export default App;

@@ -1,8 +1,7 @@
-
+import { Link } from "react-router-dom";
 import ShelvesList from "../Shelves/Shelves";
 
-
-const MainPage = ({setShowSearchpage}) => {
+const MainPage = () => {
   const Shelves = [
     "currentlyReading",
     "wantToRead",
@@ -19,7 +18,7 @@ const MainPage = ({setShowSearchpage}) => {
             </div>
           </div>
           <div className="open-search">
-            <a href="#add" onClick={ () => {setShowSearchpage(true)}}>Add a book</a>
+            <Link to={`/search/`}>Add a book</Link>
           </div>
         </div>
     )

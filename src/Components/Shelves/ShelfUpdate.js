@@ -1,36 +1,33 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import * as BooksAPI from '../../Backend/BooksAPI'
 import PropTypes from 'prop-types'
+
 const UpdateShelf = (props) => {
-    
-    const {book,shelf,onBooksUpdate} = props
-    const [currentShelf, updateCurrentShelf] = useState('')
+    const {book,shelf,setBooks,Books} = props
+    const [currentShelf, updateCurrentShelf] = useState(shelf)
     const shelves = [
         { shelfname: "currentlyReading", title : "Currently Reading" },
         { shelfname: "wantToRead", title : "Want to Read" },
         { shelfname: "read", title: "Read" },
         { shelfname: "none", title:"None"}
     ]
-    
-    const UpdateShelf = useCallback((e) => {
-        onBooksUpdate(e)
-    }, [onBooksUpdate])
-
     const handleShelfUpdate = (e) => {
         const newShelf = e.target.value
-        let updateResult;
         updateCurrentShelf(newShelf)
-        BooksAPI.update(book,newShelf).then((result) => {
-            updateResult =result
-        })
-        UpdateShelf(updateResult)
-        
+        BooksAPI.update(book,newShelf)
+        BooksAPI.getAll().then((Results) => {
+            if(Books !== Results){
+                setBooks(Results)
+            }
+        }
+        )
+    
     }
 
     return(
-        <select value={currentShelf} onChange={handleShelfUpdate}>
-            <option value="" disabled>
-            Move to...
+        <select defaultValue={currentShelf} onChange={handleShelfUpdate}>
+            <option style={{background:"orange",fontWeight:"bold",color:"white",border:"2px solid red"}} value={book.shelf} disabled>
+            Move from [ {shelves.filter(({shelfname}) => shelfname === currentShelf).map(({title}) => { return( title ) })} ]
             </option>
             {
                 shelf !== undefined
@@ -53,6 +50,8 @@ const UpdateShelf = (props) => {
 }
 UpdateShelf.propTypes = {
     onBooksUpdate: PropTypes.func,
+    book: PropTypes.object,
+    shelf: PropTypes.string
 }
 
 export default UpdateShelf;
