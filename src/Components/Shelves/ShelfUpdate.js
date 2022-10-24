@@ -1,46 +1,42 @@
-import { useState } from "react";
+import {  useState } from "react";
 import * as BooksAPI from '../../Backend/BooksAPI'
 import PropTypes from 'prop-types'
 
 const UpdateShelf = (props) => {
-    const {book,shelf,setBooks,Books} = props
-    const [currentShelf, updateCurrentShelf] = useState(shelf)
-    const shelves = [
-        { shelfname: "currentlyReading", title : "Currently Reading" },
-        { shelfname: "wantToRead", title : "Want to Read" },
-        { shelfname: "read", title: "Read" },
-        { shelfname: "none", title:"None"}
-    ]
+    const {book,Shelf,setBooks,books,shelves,setMounted,Mounted} = props
+    const [currentShelf, updateCurrentShelf] = useState(Shelf)
+    
     const handleShelfUpdate = (e) => {
         const newShelf = e.target.value
         updateCurrentShelf(newShelf)
-        BooksAPI.update(book,newShelf)
-        BooksAPI.getAll().then((Results) => {
-            if(Books !== Results){
-                setBooks(Results)
-            }
-        }
-        )
-    
+        BooksAPI.update(book,newShelf).then(() =>{
+            setMounted(!Mounted)
+            BooksAPI.getAll().then((Results) => {
+                if(books !== Results){
+                    setBooks(Results)
+                }
+            })
+        })
     }
 
     return(
-        <select defaultValue={currentShelf} onChange={handleShelfUpdate}>
-            <option style={{background:"orange",fontWeight:"bold",color:"white",border:"2px solid red"}} value={book.shelf} disabled>
-            Move from [ {shelves.filter(({shelfname}) => shelfname === currentShelf).map(({title}) => { return( title ) })} ]
+        <select defaultValue={Shelf} onChange={handleShelfUpdate}>
+            <option style={{background:"orange",fontWeight:"bold",color:"white",border:"2px solid red"}} value={Shelf} disabled>
+            Move from [ {shelves && shelves.filter(({name}) => name === currentShelf).map(({title}) => { return( title ? title : "none" ) })} ]
             </option>
             {
-                shelf !== undefined
-                ? shelves.filter(({shelfname}) => shelfname !== shelf)
-                .map(({shelfname,title}) => {
+                
+                Shelf !== undefined
+                ? shelves && shelves.filter(({name}) => name !== Shelf)
+                .map(({name,title}) => {
                     return (
-                        <option key={shelfname} value={shelfname}>{title}</option>
+                        <option key={name} value={name}>{title}</option>
                     )
-                })
-                : shelves.filter(({shelfname}) => shelfname !== "none")
-                .map(({shelfname,title}) => {
+                }) 
+                : shelves && shelves.filter(({name}) => name !== "none")
+                .map(({name,title}) => {
                     return (
-                        <option key={shelfname} value={shelfname}>{title}</option>
+                        <option key={name} value={name}>{title}</option>
                     )
                 })
                 
@@ -49,9 +45,9 @@ const UpdateShelf = (props) => {
     )
 }
 UpdateShelf.propTypes = {
-    onBooksUpdate: PropTypes.func,
-    book: PropTypes.object,
-    shelf: PropTypes.string
+    setBooks: PropTypes.func.isRequired,
+    book: PropTypes.object.isRequired,
+    Shelf: PropTypes.string
 }
 
 export default UpdateShelf;

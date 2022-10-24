@@ -1,26 +1,15 @@
-import { Link } from "react-router-dom";
-import ShelvesList from "../Shelves/Shelves";
+import HomeView from "../../Views/Home/Home";
 
-const MainPage = () => {
-  const Shelves = [
-    "currentlyReading",
-    "wantToRead",
-    "read"
-  ]
+const MainPage = (props) => {
+  const {shelves,books,setBooks,setMounted,Mounted} = props
     return (
-        <div className="list-books">
-          <div className="list-books-title">
-            <h1>MyReads</h1>
-          </div>
-          <div className="list-books-content">
-            <div>
-              {Shelves.map((Shelf) => <ShelvesList key={Shelf} Shelf={Shelf} />)}
-            </div>
-          </div>
-          <div className="open-search">
-            <Link to={`/search/`}>Add a book</Link>
-          </div>
-        </div>
+        <HomeView 
+          Mounted={Mounted}
+          setMounted={ setMounted}
+          books={books}
+          shelves={shelves}
+          setBooks={ setBooks}
+          />
     )
 }
 

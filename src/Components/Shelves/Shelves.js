@@ -1,41 +1,17 @@
-import { useEffect, useState } from "react";
 import Book from "../Book/Book";
-import * as BooksAPI from '../../Backend/BooksAPI'
 import PropTypes from 'prop-types'
 
 const ShelvesList = (props) => {
-    const {Shelf} = props
-    const shelves = [
-        { shelfname: "currentlyReading", title : "Currently Reading" },
-        { shelfname: "wantToRead", title : "Want to Read" },
-        { shelfname: "read", title: "Read" },
-        { shelfname: "none", title:"None"}
-    ]
-    const [Books, setBooks] = useState([])
-
-    useEffect(() => {
-        let mounted = true;
-        BooksAPI.getAll()
-        .then((books) => {
-            if(mounted){
-                if(books !== Books){
-                    setBooks(books)
-                }
-            }
-        })
-        return () => mounted = false
-    }, [Books])
-    
-    
+    const {Shelf,shelves,books,setBooks,setMounted,Mounted} = props
     return (
         <div className="bookshelf" key={Shelf}>
-            <h2 className="bookshelf-title">{shelves.filter(({shelfname}) => shelfname === Shelf).map((shelf) => {return (shelf.title)})}</h2>
+            <h2 className="bookshelf-title">{shelves.filter(({name}) => name === Shelf.name).map((shelf) => {return (shelf.title)})}</h2>
             <div className="bookshelf-books">
                 <ol className="books-grid">
                     {
-                        Books.filter(({shelf}) => shelf === Shelf).length > 0
-                        ? Books.filter(({shelf}) => shelf === Shelf).map((book) => <Book key={book.id} book={book} shelf={book.shelf} Books={Books} setBooks={setBooks} />)
-                        : <h3><span style={{color:"red",textDecoration:"underline"}}>{Books.filter(({shelf}) => shelf === Shelf).length}</span> Books found in this shelf.</h3>
+                        books.filter(({shelf}) => shelf === Shelf.name).length > 0
+                        ? books.filter(({shelf}) => shelf === Shelf.name).map((book) => <Book key={book.id} book={book} Shelf={book.shelf} books={books} setBooks={ setBooks} shelves={shelves} setMounted={ setMounted} Mounted={Mounted}/>)
+                        : <h3><span style={{color:"red",textDecoration:"underline"}}>{books.filter(({shelf}) => shelf === Shelf.name).length}</span> Books found in this shelf.</h3>
                     }
                 </ol>
             </div>
@@ -44,7 +20,7 @@ const ShelvesList = (props) => {
 }
 ShelvesList.propTypes = {
     setBooks: PropTypes.func,
-    Shelf: PropTypes.string.isRequired,
+    Shelf: PropTypes.object.isRequired,
     book: PropTypes.objectOf(PropTypes.object),
 }
 export default ShelvesList;

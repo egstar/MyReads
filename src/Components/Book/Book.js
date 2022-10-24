@@ -1,8 +1,8 @@
-import ShelfUpdate from '../Shelves/ShelfUpdate'
+import UpdateShelf from '../Shelves/ShelfUpdate'
 import PropTypes from 'prop-types'
 
 const Book = (props) => {
-    const {book,shelf, setBooks,Books} = props
+    const {book,setBooks,books,shelves,setMounted,Mounted} = props
     
     return(
         <li className={`listedBook`} key={book.id}>
@@ -19,12 +19,15 @@ const Book = (props) => {
                     }}
                     ></div>
                     <div className="book-shelf-changer">
-                        <ShelfUpdate 
+                        <UpdateShelf 
                             key={book.id} 
                             book={book} 
-                            shelf={shelf} 
-                            setBooks={() => setBooks}
-                            Books={Books}
+                            books={books}
+                            Shelf={book.shelf ? book.shelf : books.filter(({id}) => id === book.id).length > 0 ? books.filter(({id}) => id === book.id).map((thisbook) => { return thisbook.shelf} ).toString() : "none"} 
+                            shelves={shelves}
+                            setBooks={ setBooks}
+                            setMounted={ setMounted}
+                            Mounted={Mounted}
                         />
                     </div>
                 </div>
@@ -43,6 +46,6 @@ const Book = (props) => {
 Book.propTypes = {
     onBooksUpdate: PropTypes.func,
     book: PropTypes.object,
-    shelf: PropTypes.string
+    Shelf: PropTypes.string
 }
 export default Book;
