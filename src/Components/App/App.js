@@ -1,4 +1,4 @@
-import  {BrowserRouter as Router, Route, Routes} from "react-router-dom"
+import  {HashRouter as Router, Route, Routes} from "react-router-dom"
 import MainPage from "../Main/Main";
 import SearchBar from "../Search/Search";
 import Index from "../Main/Index";
@@ -29,8 +29,8 @@ const App = () => {
     return () => setMounted(false)
   }, [Mounted,books])
 
-  let color= Mounted===true ? "lightgreen" : "red"
-  console.log("%cUnmounted:%c %c"+Mounted, "font-weight:bold;background:navy;color:white","color:white","text-decoration:underline;color:"+color)
+  // let color= Mounted===true ? "lightgreen" : "red"
+  // console.log("%cMounted:%c %c"+Mounted, "font-weight:bold;background:lightgreen;color:white","color:white","text-decoration:underline;color:"+color)
   return (
     <Router>
       <Routes>

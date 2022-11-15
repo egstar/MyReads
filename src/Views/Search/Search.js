@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Book from "../../Components/Book/Book";
+import { DebounceInput } from "react-debounce-input";
 
 const SearchView = (props) => {
     const {searchQuery,SearchQuery,BooksList,shelves,setBooks,books,setMounted,Mounted} = props
@@ -13,10 +14,12 @@ const SearchView = (props) => {
               Close
             </Link>
             <div className="search-books-input-wrapper">
-              <input
+              <DebounceInput
+                minLength={2}
+                debounceTimeout={250}
+                element="input"
                 type="text"
                 placeholder="Type Book name here"
-                value={searchQuery}
                 onChange={SearchQuery}
                 
               />

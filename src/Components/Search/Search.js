@@ -2,6 +2,7 @@ import React, {useEffect,useState} from "react";
 import * as BooksAPI from '../../Backend/BooksAPI'
 import SearchView from "../../Views/Search/Search";
 
+
 const SearchBar = (props) => {
   const { books,setBooks,setMounted,shelves,Mounted } = props
   const [searchQuery, setSearchQuery] = useState('')
